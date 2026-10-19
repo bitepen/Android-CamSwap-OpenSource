@@ -164,6 +164,8 @@ public class HookMain {
     // =====================================================================
 
     public void handleLoadPackage(final Api101PackageContext packageContext) throws Exception {
+        // 当获取到宿主 Application 或 Context 时调用：
+Swit    chablePreview.initInTargetProcess(context);
         final ClassLoader classLoader = packageContext.classLoader;
         final String packageName = packageContext.hostPackageName;
         // Check if module is disabled
@@ -634,4 +636,23 @@ public class HookMain {
     private static Object[] toArgs(List<Object> args) {
         return HookUtils.toArgs(args);
     }
+
+    public static void onCameraSourceSwitched(boolean isOriginal) {
+    Log.i("CamSwap", "Target received switch event: " + isOriginal);
+    try {
+        if (isOriginal) {
+            // 切到原相机：暂停替换视频播放
+            if (playerManager != null) {
+                playerManager.pauseAll(); // 或 setVolume(0)
+            }
+        } else {
+            // 切到虚拟相机：恢复播放
+            if (playerManager != null) {
+                playerManager.restartAll();
+            }
+        }
+    } catch (Throwable t) {
+        Log.e("CamSwap", "Error during camera switch handling", t);
+    }
+}
 }

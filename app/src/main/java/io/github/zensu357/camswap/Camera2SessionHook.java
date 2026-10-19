@@ -2778,11 +2778,16 @@ public final class Camera2SessionHook {
     }
 
     public void onCameraSourceChanged() {
-    // 相机源切换时触发，重新应用当前 Session 的 Surface 或刷新请求
-    try {
-        // 如果类内部有 captureSession 或刷新 request 的逻辑可在此调用
-    } catch (Throwable t) {
-        // 保证切换时不因异常导致宿主崩溃
+        try {
+            boolean original = SwitchablePreview.useOriginalCamera();
+            // 关键逻辑：如果是原相机，让 captureSession 的重复请求继续向真实 Surface 发送
+            // 如果内部维护了 activeSession，尝试触发一次 RepeatingRequest 刷新
+            if (activeSession != null && previewRequestBuilder != null) {
+                activeSession.setRepeatingRequest(previewRequestBuilder.build(), null, null);
+            }
+        } 
+        catch (Throwable t) {
+            // 避免切换过程中断开 HAL 会话引发闪退
+        }
     }
-}
 }

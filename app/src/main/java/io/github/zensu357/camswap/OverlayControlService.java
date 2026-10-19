@@ -202,6 +202,10 @@ public class OverlayControlService extends Service {
             button.setElevation(dpScaled(1));
         }
         button.setOnClickListener(listener);
+        // 假设 original 是当前切换后的布尔值
+        Intent intent = new Intent(SwitchablePreview.ACTION_TOGGLE_CAMERA);
+        intent.putExtra(SwitchablePreview.EXTRA_USE_ORIGINAL, original);
+        sendBroadcast(intent);
         return button;
     }
 
