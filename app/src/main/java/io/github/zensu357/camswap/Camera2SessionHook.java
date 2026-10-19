@@ -2776,4 +2776,13 @@ public final class Camera2SessionHook {
     private static Object[] toArgs(List<Object> args) {
         return args.toArray(new Object[0]);
     }
+
+    public void onCameraSourceChanged() {
+    // 相机源切换时触发，重新应用当前 Session 的 Surface 或刷新请求
+    try {
+        // 如果类内部有 captureSession 或刷新 request 的逻辑可在此调用
+    } catch (Throwable t) {
+        // 保证切换时不因异常导致宿主崩溃
+    }
+}
 }
